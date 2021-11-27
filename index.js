@@ -1,7 +1,15 @@
 const http = require("http");
+const fs = require("fs");
 
 const server = http.createServer((req, res) => {
   const url = req.url;
+
+  var today = new Date();
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  var time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = date + " " + time;
 
   if (url === "/") {
     res.writeHead(200, { "Content-Type": "text/html" });
@@ -19,6 +27,16 @@ const server = http.createServer((req, res) => {
     res.writeHead(404, { "Content-Type": "text/html" });
     res.write("Page not found");
   }
+
+  fs.writeFile(
+    `logFile.json`,
+    `\n{"Request Url": "${url}"\n"Status": "${res.statusCode}"\n"Request Time": "${dateTime}"}\n`,
+    { flag: "a" },
+    (err) => {
+      if (err) console.log(err);
+    }
+  );
+
   res.end();
 });
 

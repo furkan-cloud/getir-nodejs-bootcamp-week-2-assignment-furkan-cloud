@@ -1,9 +1,12 @@
+// import core modules for creating server and log operations
 const http = require("http");
 const fs = require("fs");
 
+// created http server
 const server = http.createServer((req, res) => {
   const url = req.url;
 
+  // Get current time for log operations
   var today = new Date();
   var date =
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
@@ -11,6 +14,7 @@ const server = http.createServer((req, res) => {
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   var dateTime = date + " " + time;
 
+  // Create responses for requests to different urls
   if (url === "/") {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write("You are at home page");
@@ -28,6 +32,7 @@ const server = http.createServer((req, res) => {
     res.write("Page not found");
   }
 
+  // Log every request, status code and current time to json file with writeFile method
   fs.writeFile(
     `logFile.json`,
     `\n{"Request Url": "${url}"\n"Status": "${res.statusCode}"\n"Request Time": "${dateTime}"}\n`,
@@ -40,8 +45,10 @@ const server = http.createServer((req, res) => {
   res.end();
 });
 
+// Create port as variable
 const port = 4000;
 
+// Listen port for requests
 server.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
